@@ -1,52 +1,47 @@
-variable "aks_cluster_name" {
+variable "acr_name" {
   type        = string
-  description = "sku"
+  description = "acr name"
 }
 variable "rg_name" {
   type        = string
-  description = "sku"
+  description = "rg name"
 }
 
 variable "location" {
   type        = string
-  description = "sku"
+  description = "location"
 }
 
-variable "dns_prefix" {
+variable "acr_sku" {
+  type        = string
+  description = "sku"
+}
+variable "dockerfile_path" {
+  type        = string
+  description = "sku"
+}
+variable "docker_build_context_path" {
+  type        = string
+  description = "sku"
+}
+variable "context_access_token" {
   type        = string
   description = "sku"
 }
 
-variable "system_node_pool_name" {
+variable "platform_os" {
+  description = "sku"
+  type        = string
+}
+
+variable "acr_task_name" {
+  description = "sku"
+  type        = string
+}
+variable "docker_image_name" {
   type        = string
   description = "sku"
 }
-
-variable "system_node_pool_node_count" {
-  type        = number
-  description = "sku"
-}
-
-variable "system_node_pool_vm_size" {
-  type        = string
-  description = "sku"
-}
-
-variable "acr_id" {
-  type        = string
-  description = "sku"
-}
-
-variable "key_vault_id" {
-  type        = string
-  description = "sku"
-}
-
-variable "tenant_id" {
-  type        = string
-  description = "sku"
-}
-
 variable "tags" {
   type        = map(string)
   description = "sku"
