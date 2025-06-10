@@ -1,8 +1,8 @@
-rg_name="suvham-tfstate-rg456"
+rg_name="suvham-tfstate-rg"
 rg_location="southindia"
-storage_account_name="suvham-tfstate-sa-456"
+storage_account_name="suvhamtfstatesa"
 storage_account_sku="Standard_LRS"
-storage_container_name="suvham-tfstate-cont-456"
+storage_container_name="suvham-tfstate-container"
 
 az group create --name $rg_name --location $rg_location
 
