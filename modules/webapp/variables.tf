@@ -1,31 +1,32 @@
 variable "service_plan_name" {
-    type = string
+  type = string
 }
 
 variable "rg_name" {
-    type = string
+  type = string
 }
 
 variable "location" {
-    type = string
+  type = string
 }
 
 variable "sku_name" {
-  
+
 }
 
 variable "webapp_name" {
-    type = string
+  type = string
 }
 
 variable "docker_image_name" {
-    type = string
+  type = string
 }
 
 variable "docker_registry_url" {
-    type = string
+  type = string
 }
 
 variable "secure_envvars" {
-    type = map(string)
+  type = map(string)
+  sensitive = true
 }

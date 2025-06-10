@@ -1,21 +1,21 @@
 variable "kv_name" {
-  type        = string
+  type = string
 }
 variable "rg_name" {
-  type        = string
+  type = string
 }
 variable "location" {
-  type        = string
+  type = string
 }
 variable "sku" {
-  type        = string
+  type = string
 }
 variable "tenant_id" {
-  type        = string
+  type = string
 }
 variable "object_id" {
-  type        = string
+  type = string
 }
 variable "tags" {
-  type        = map(string)
+  type = map(string)
 }

@@ -40,5 +40,5 @@ variable "tags" {
 }
 
 variable "kv_id" {
-    type = string
+  type = string
 }

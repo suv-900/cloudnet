@@ -27,3 +27,7 @@ variable "aks_kv_access_identity_id" {
   type        = string
   description = "value"
 }
+
+variable "tenant_id" {
+    type = string
+}

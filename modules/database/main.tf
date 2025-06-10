@@ -13,8 +13,8 @@ resource "azurerm_mssql_server" "sql_server" {
   version                      = "12.0"
   administrator_login          = random_pet.sql_username.id
   administrator_login_password = random_password.sql_password.result
-  
-  tags                         = var.tags
+
+  tags = var.tags
 }
 
 resource "azurerm_mssql_database" "sql_db" {
@@ -22,17 +22,17 @@ resource "azurerm_mssql_database" "sql_db" {
   server_id = azurerm_mssql_server.sql.id
   sku_name  = var.sql_sku
 
-  tags      = var.tags
+  tags = var.tags
 }
 
 resource "azurerm_key_vault_secret" "sql_username_secret" {
-  name = var.secret_sql_username_name
-  value = random_pet.sql_username.id
-  key_vault_id = var.kv_id 
+  name         = var.secret_sql_username_name
+  value        = random_pet.sql_username.id
+  key_vault_id = var.kv_id
 }
 
 resource "azurerm_key_vault_secret" "sql_password_secret" {
-  name = var.secret_sql_password_name
-  value = random_password.sql_password.result
-  key_vault_id = var.kv_id 
+  name         = var.secret_sql_password_name
+  value        = random_password.sql_password.result
+  key_vault_id = var.kv_id
 }

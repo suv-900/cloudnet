@@ -24,6 +24,12 @@ variable "acr_task_name" {
   type        = string
   description = "sku"
 }
+variable "docker_build_context_path" {
+    type = string
+}
+variable "docker_context_access_token" {
+    type = string
+}
 
 #kv
 variable "kv_sku" {
@@ -78,37 +84,30 @@ variable "secret_sql_password_name" {
 
 #webapp
 variable "service_plan_name" {
-    type = string
+  type = string
 }
 
-variable "rg_name" {
-    type = string
-}
-
-variable "location" {
-    type = string
-}
 
 variable "webapp_sku_name" {
-  
+
 }
 
 variable "webapp_name" {
-    type = string
+  type = string
 }
 
 variable "docker_image_name" {
-    type = string
+  type = string
 }
 
 variable "docker_registry_url" {
-    type = string
+  type = string
 }
 
 variable "docker_registry_username" {
-    type = string
+  type = string
 }
 
 variable "docker_registry_password" {
-    type = string
+  type = string
 }
