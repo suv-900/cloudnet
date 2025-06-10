@@ -90,6 +90,7 @@ module "webapp" {
     "SQL_PASSWORD" = data.azurerm_key_vault_secret.sql_password.value
     "SQL_SERVER" = module.db.server_url
     "SQL_DATABASE" = module.db.db_url
+    "WEBSITES_PORT" = 3000
     "PORT" = 3000
   }
 }

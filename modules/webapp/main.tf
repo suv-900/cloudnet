@@ -12,6 +12,7 @@ resource "azurerm_linux_web_app" "webapp" {
   location            = var.location
   service_plan_id     = azurerm_service_plan.sap.id
 
+  #env vars
   app_settings = var.secure_envvars
 
   site_config {
