@@ -6,8 +6,6 @@ resource "azurerm_key_vault" "kv" {
   sku_name = var.sku
 
   tenant_id = var.tenant_id
-
-  tags = var.tags
 }
 
 resource "azurerm_key_vault_access_policy" "access_policy" {

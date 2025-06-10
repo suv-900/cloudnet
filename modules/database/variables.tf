@@ -33,12 +33,6 @@ variable "secret_sql_password_name" {
   type        = string
   description = "Name of the Key Vault secret to store SQL admin password"
 }
-
-variable "tags" {
-  type        = map(string)
-  description = "Tags to apply to resources"
-}
-
 variable "kv_id" {
   type = string
 }

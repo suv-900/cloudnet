@@ -46,8 +46,3 @@ variable "tenant_id" {
   type        = string
   description = "sku"
 }
-
-variable "tags" {
-  type        = map(string)
-  description = "sku"
-}

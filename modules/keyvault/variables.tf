@@ -16,6 +16,3 @@ variable "tenant_id" {
 variable "object_id" {
   type = string
 }
-variable "tags" {
-  type = map(string)
-}

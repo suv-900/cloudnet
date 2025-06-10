@@ -7,35 +7,27 @@ variable "name_prefix" {
   description = "sku"
 }
 
+variable "rg_name" {
+  type = string
+}
+
 #acr
 variable "acr_sku" {
   type        = string
   description = "sku"
 }
-variable "dockerfile_path" {
-  type        = string
-  description = "sku"
+variable "acr_name" {
+  type = string
 }
-variable "platform_os" {
-  type        = string
-  description = "sku"
-}
-variable "acr_task_name" {
-  type        = string
-  description = "sku"
-}
-variable "docker_build_context_path" {
-    type = string
-}
-variable "docker_context_access_token" {
-    type = string
-}
-
 #kv
 variable "kv_sku" {
   description = "sku"
   type        = string
 }
+variable "keyvault_name" {
+  type = string
+}
+
 
 #aks
 variable "system_node_pool_name" {
@@ -50,64 +42,38 @@ variable "system_node_pool_vm_size" {
   type        = string
   description = "sku"
 }
+variable "aks_name" {
+  type = string
+}
 
 #db
 variable "sql_server_name" {
-  type        = string
-  description = "Name of the Azure SQL Server instance"
+  type = string
 }
-
 variable "sql_db_name" {
-  type        = string
-  description = "Name of the SQL Database"
+  type = string
 }
-
 variable "sql_sku" {
-  type        = string
-  description = "The SKU for the SQL database (e.g., Basic, S0)"
+  type = string
 }
-
-variable "tags" {
-  type        = map(string)
-  description = "Tags to apply to resources"
-}
-
 variable "secret_sql_username_name" {
-  type        = string
-  description = "Name of the Key Vault secret to store SQL admin username"
+  type = string
 }
-
 variable "secret_sql_password_name" {
-  type        = string
-  description = "Name of the Key Vault secret to store SQL admin password"
+  type = string
 }
 
 #webapp
 variable "service_plan_name" {
   type = string
 }
-
-
-variable "webapp_sku_name" {
-
-}
-
 variable "webapp_name" {
   type = string
 }
-
-variable "docker_image_name" {
+variable "service_plan_sku" {
   type = string
 }
 
-variable "docker_registry_url" {
-  type = string
-}
-
-variable "docker_registry_username" {
-  type = string
-}
-
-variable "docker_registry_password" {
+variable "dns_prefix" {
   type = string
 }
