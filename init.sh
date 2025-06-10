@@ -8,4 +8,4 @@ az group create --name $rg_name --location $rg_location
 
 az storage account create --name $storage_account_name --resource-group $rg_name --sku $storage_account_sku
 
-az storage container create --name $storage_container_name --account-name $storage_account_name --public-access blob 
+az storage container create --name $storage_container_name --account-name $storage_account_name 
