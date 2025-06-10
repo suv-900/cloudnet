@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-flask-app
+  name: cicd-app
   labels:
-    app: redis-flask-app
+    app: cicd-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redis-flask-app
+      app: cicd-app
   template:
     metadata:
       labels:
-        app: redis-flask-app
+        app: cicd-app
     spec:
       containers:
-        - name: devops
+        - name: app 
           image: ${acr_login_server}/${app_image_name}:${image_tag}
           ports:
             - containerPort: 8080

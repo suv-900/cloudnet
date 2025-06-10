@@ -26,10 +26,6 @@ variable "docker_registry_url" {
     type = string
 }
 
-variable "docker_registry_username" {
-    type = string
-}
-
-variable "docker_registry_password" {
-    type = string
+variable "secure_envvars" {
+    type = map(string)
 }
