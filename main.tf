@@ -37,8 +37,8 @@ module "db" {
   rg_name  = azurerm_resource_group.rg.name
   location = azurerm_resource_group.rg.location
 
-  secret_sql_username_name = var.secret_sql_username_name
-  secret_sql_password_name = var.secret_sql_password_name
+  secret_sql_username_name = local.secret_sql_username_name
+  secret_sql_password_name = local.secret_sql_password_name
 
   tags = var.tags
 }
@@ -134,10 +134,15 @@ module "k8s" {
 
   acr_login_server          = module.acr.login_server
   docker_image_name         = local.docker_image_name
+  sql_database_url = module.db.db_url 
+  sql_server_url = module.db.server_url
+
   kv_name                   = local.keyvault_name
   secret_sql_username_name  = local.secret_sql_username_name
   secret_sql_password_name  = local.secret_sql_password_name
   aks_kv_access_identity_id = module.aks.aks_kv_access_identity_id
+
+
 
   tenant_id = data.azurerm_client_config.client_config.tenant_id  
   

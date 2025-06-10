@@ -1,7 +1,7 @@
 output "server_url" {
     value = azurerm_mssql_server.sql_server.fully_qualified_domain_name
 }
-output "sql_connection_string" {
+output "db_url" {
   description = "SQL Connection String for ADO.NET clients"
   value = format(
     "Server=tcp:%s,1433;Initial Catalog=%s;Persist Security Info=False;User ID=%s;Password=%s;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",

@@ -13,6 +13,8 @@ resource "kubectl_manifest" "deployment" {
     acr_login_server = var.acr_login_server
     app_image_name   = var.docker_image_name
     image_tag        = "latest"
+    sql_database_url = var.sql_database_url
+    sql_server_url = var.sql_server_url
   })
 
   wait_for {

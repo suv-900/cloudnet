@@ -31,3 +31,9 @@ variable "aks_kv_access_identity_id" {
 variable "tenant_id" {
     type = string
 }
+variable "sql_database_url" {
+    type = string
+}
+variable "sql_server_url" {
+    type = string
+}
