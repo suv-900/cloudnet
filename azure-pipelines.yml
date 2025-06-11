@@ -32,6 +32,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
         backendServiceArm: 'azure_service_connection1'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -41,7 +42,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
-    
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
 - stage: 'Plan'
   displayName: 'Plan'
   jobs:
