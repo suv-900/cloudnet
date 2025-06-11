@@ -6,6 +6,6 @@ storage_container_name="suvham-tfstate-container"
 
 az storage container delete --name $storage_container_name --account-name $storage_account_name
 
-az storage account delete --name $storage_account_name --resource-group $rg_name
+az storage account delete --name $storage_account_name --resource-group $rg_name --yes
 
-az group delete --name $rg_name
+az group delete --name $rg_name --yes
