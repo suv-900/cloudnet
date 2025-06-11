@@ -51,7 +51,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        commandOptions: '-var-file=.\environments\${{ parameters.environment }}\variables.tfvars'
+        commandOptions: '-var-file=infrastructure/environments/${{ parameters.environment }}/variables.tfvars'
         environmentServiceNameAzureRM: 'azure_service_connection1'
     
 
@@ -64,7 +64,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'apply'
-        commandOptions: '-var-file=.\environments\${{ parameters.environment }}\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=infrastructure/environments/${{ parameters.environment }}/variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'azure_service_connection1'
 
 
