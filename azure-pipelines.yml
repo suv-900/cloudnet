@@ -6,13 +6,23 @@ trigger:
     include:
     - infrastructure/*
 
+parameters:
+- name: environment
+  type: string
+  displayName: Environment
+  default: dev
+  values:
+  - 'dev'
+  - 'prod'
+  - 'stage'
+  - 'qa'
 
 pool:
   vmImage: ubuntu-latest
 
 stages:
-- stage: 'Dev_Validate'
-  displayName: 'Dev Terraform Plan'
+- stage: 'Validate'
+  displayName: 'Terraform validate'
   jobs:
   - job: 
     steps:
@@ -33,8 +43,8 @@ stages:
         provider: 'azurerm'
         command: 'validate'
     
-- stage: 'Dev_Plan'
-  displayName: 'Dev Plan'
+- stage: 'Plan'
+  displayName: 'Plan'
   jobs:
   - job:
     steps:
@@ -42,12 +52,12 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        commandOptions: '-var-file=.\environments\dev\variables.tfvars'
+        commandOptions: '-var-file=.\environments\${{ parameters.environment }}\variables.tfvars'
         environmentServiceNameAzureRM: 'azure_service_connection1'
     
 
-- stage: 'Dev_Apply'
-  displayName: 'Dev Apply'
+- stage: 'Apply'
+  displayName: 'Apply'
   jobs:
   - job:
     steps:
@@ -55,7 +65,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'apply'
-        commandOptions: '-var-file=.\environments\dev\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=.\environments\${{ parameters.environment }}\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'azure_service_connection1'
 
 
