@@ -17,8 +17,7 @@ parameters:
   - 'stage'
   - 'qa'
 
-pool:
-  vmImage: ubuntu-latest
+pool: Default
 
 stages:
 - stage: 'Validate'
