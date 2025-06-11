@@ -1,4 +1,4 @@
-location = "eastus"
+location = "West US 2"
 
 environment = "dev"
 

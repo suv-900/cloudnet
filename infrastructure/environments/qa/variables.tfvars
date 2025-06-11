@@ -1,4 +1,4 @@
-location = "southindia"
+location = "West US 2"
 
 environment = "qa"
 
