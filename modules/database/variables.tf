@@ -36,3 +36,14 @@ variable "secret_sql_password_name" {
 variable "kv_id" {
   type = string
 }
+variable "secret_sql_database_name" {
+  type = string
+}
+
+variable "secret_sql_connection_string_name" {
+  type = string
+}
+
+variable "secret_sql_server_fqdn_name" {
+  type = string
+}

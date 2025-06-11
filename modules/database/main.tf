@@ -16,8 +16,8 @@ resource "azurerm_mssql_server" "sql_server" {
 }
 
 resource "azurerm_mssql_database" "sql_db" {
-  name      = var.sql_db_name
   server_id = azurerm_mssql_server.sql_server.id
+  name      = var.sql_db_name
   sku_name  = var.sql_sku
 }
 
@@ -38,7 +38,7 @@ resource "azurerm_key_vault_secret" "sql_password_secret" {
 }
 
 resource "azurerm_key_vault_secret" "sql_connection_string" {
-  name = "db-connection-string"
+  name = var.secret_sql_connection_string_name
   value = format(
     "Server=tcp:%s,1433;Initial Catalog=%s;Persist Security Info=False;User ID=%s;Password=%s;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
     azurerm_mssql_server.sql_server.fully_qualified_domain_name,
@@ -51,8 +51,16 @@ resource "azurerm_key_vault_secret" "sql_connection_string" {
   depends_on = [azurerm_key_vault_secret.sql_password_secret]
 }
 
-resource "azurerm_key_vault_secret" "server_fqdn" {
-  name         = "sql-server-fqdn"
+resource "azurerm_key_vault_secret" "sql_server_fqdn" {
+  name         = var.secret_sql_server_fqdn_name
   value        = azurerm_mssql_server.sql_server.fully_qualified_domain_name
   key_vault_id = var.kv_id
+  depends_on   = [azurerm_key_vault_secret.sql_connection_string]
+}
+
+resource "azurerm_key_vault_secret" "sql_database_name" {
+  name         = var.secret_sql_database_name
+  value        = azurerm_mssql_database.sql_db.name
+  key_vault_id = var.kv_id
+  depends_on   = [azurerm_key_vault_secret.sql_server_fqdn]
 }

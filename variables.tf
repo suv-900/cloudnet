@@ -4,7 +4,7 @@ variable "location" {
 }
 
 variable "environment" {
- type = string 
+  type = string
 }
 
 #acr
@@ -44,5 +44,9 @@ variable "service_plan_sku" {
 }
 
 variable "dns_prefix" {
+  type = string
+}
+
+variable "node_version" {
   type = string
 }
