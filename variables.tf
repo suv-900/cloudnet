@@ -42,11 +42,6 @@ variable "sql_sku" {
 variable "service_plan_sku" {
   type = string
 }
-
-variable "dns_prefix" {
-  type = string
-}
-
 variable "node_version" {
   type = string
 }
