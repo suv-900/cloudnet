@@ -90,5 +90,26 @@ stages:
         commandOptions: '-var-file=environments\${{ parameters.environment }}\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
-
+- stage: 'Destroy'
+  displayName: 'Destroy'
+  jobs:
+  - job:
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+        backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
+        backendAzureRmStorageAccountName: 'suvhamtfstatesa'
+        backendAzureRmContainerName: 'suvham-tfstate-container'
+        backendAzureRmKey: '${{parameters.environment}}.tfstate'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'destroy'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        commandOptions: '-var-file=.\environments\${{parameters.environment}}\variables.tfvars -auto-approve'
+        environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
       
