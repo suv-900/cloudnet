@@ -12,7 +12,6 @@ kv_sku = "standard"
 system_node_pool_name       = "system"
 system_node_pool_node_count = 1
 system_node_pool_vm_size    = "Standard_D2ads_v5"
-aks_name                    = "suvham-aks-1"
 
 #db
 sql_sku = "S2"

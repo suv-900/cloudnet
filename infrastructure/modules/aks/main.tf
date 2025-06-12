@@ -28,7 +28,14 @@ resource "azurerm_kubernetes_cluster" "k8_cluster" {
   }
 }
 
-/*
+resource "azurerm_role_assignment" "role_assignment" {
+  role_definition_name = "AcrPull"
+  scope                = var.acr_id
+  principal_id         = azurerm_kubernetes_cluster.k8_cluster.kubelet_identity[0].object_id
+
+  depends_on = [azurerm_kubernetes_cluster.k8_cluster]
+}
+
 resource "azurerm_key_vault_access_policy" "access_policy1" {
   key_vault_id = var.key_vault_id
   tenant_id    = var.tenant_id
@@ -48,4 +55,3 @@ resource "azurerm_key_vault_access_policy" "access_policy2" {
 
   depends_on = [azurerm_key_vault_access_policy.access_policy1]
 }
-*/
