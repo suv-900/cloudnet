@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-    - main
+    - '*'
   paths:
     include:
     - infrastructure/*
@@ -68,6 +68,7 @@ stages:
     
 - stage: 'Apply'
   displayName: 'Apply'
+  condition: and(succeeded(),eq(variables['Build.SourceBranch'],'refs/heads/main'))
   jobs:
   - deployment:
     environment: dev
