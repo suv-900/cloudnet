@@ -21,7 +21,7 @@ pool: Default
 
 stages:
 - stage: 'Validate'
-  displayName: 'Terraform validate'
+  displayName: 'Validate'
   jobs:
   - job: 
     steps:
@@ -67,7 +67,7 @@ stages:
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
     
 - stage: 'Apply'
-  displayName: 'Apply'
+  displayName: 'Dev Apply'
   condition: and(succeeded(),eq(variables['Build.SourceBranch'],'refs/heads/main'))
   jobs:
   - deployment:
