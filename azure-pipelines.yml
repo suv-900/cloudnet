@@ -67,14 +67,14 @@ stages:
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
     - task: ArchiveFiles@2
       inputs:
-        rootFolderOrFile: '$(Build.SourcesDirectory)/infrastructure/'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/infrastructure/'
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         replaceExistingArchive: true
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         ArtifactName: '$(Build.BuildId)'
         publishLocation: 'Container'
     
@@ -91,7 +91,7 @@ stages:
     - task: ExtractFiles@1
       inputs:
         archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-        destinationFolder: '$(System.DefaultWorkingDirectory)'
+        destinationFolder: '$(System.DefaultWorkingDirectory)/'
         cleanDestinationFolder: true
         overwriteExistingFiles: false
     - task: TerraformTask@5
