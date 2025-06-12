@@ -90,7 +90,7 @@ stages:
         terraformVersion: 'latest'
     - task: ExtractFiles@1
       inputs:
-        archiveFilePatterns: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        archiveFilePatterns: '$(Agent.BuildDirectory)/$(Build.BuildId)/$(Build.BuildId).zip'
         destinationFolder: '$(System.DefaultWorkingDirectory)/'
         cleanDestinationFolder: true
         overwriteExistingFiles: false
