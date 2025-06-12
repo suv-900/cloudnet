@@ -70,6 +70,8 @@ stages:
 - stage: 'Apply'
   displayName: 'Apply'
   jobs:
+  - deployment:
+    environment: dev
   - job:
     steps:
     - task: TerraformTask@5
@@ -93,6 +95,8 @@ stages:
 - stage: 'Destroy'
   displayName: 'Destroy'
   jobs:
+  - deployment:
+    environment: dev
   - job:
     steps:
     - task: TerraformTask@5
