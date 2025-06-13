@@ -143,36 +143,6 @@ stages:
         commandOptions: '-var-file=environments\dev\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
-- stage: 'DevDestroy'
-  displayName: 'Dev Destroy'
-  condition: and(succeeded(),eq(variables['Build.SourceBranch'],'refs/heads/main'))
-  dependsOn: DevApply
-  jobs:
-  - deployment:
-    environment: dev
-  - job:
-    steps:
-    - task: TerraformInstaller@1
-      inputs:
-        terraformVersion: 'latest'
-    - task: TerraformTask@5
-      inputs:
-        provider: 'azurerm'
-        command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
-        backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
-        backendAzureRmStorageAccountName: 'suvhamtfstatesa'
-        backendAzureRmContainerName: 'suvham-tfstate-container'
-        backendAzureRmKey: 'dev.tfstate'
-    - task: TerraformTask@5
-      inputs:
-        provider: 'azurerm'
-        command: 'destroy'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\dev\variables.tfvars -auto-approve'
-        environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
-
 - stage: 'QAApply'
   displayName: 'QA Apply'
   condition: and(succeeded(),eq(variables['Build.SourceBranch'],'refs/heads/main'))
@@ -204,13 +174,13 @@ stages:
         commandOptions: '-var-file=environments\qa\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
-- stage: 'QADestroy'
-  displayName: 'QA Destroy'
+- stage: 'DevDestroy'
+  displayName: 'Dev Destroy'
   condition: and(succeeded(),eq(variables['Build.SourceBranch'],'refs/heads/main'))
-  dependsOn: QAApply
+  dependsOn: DevApply
   jobs:
   - deployment:
-    environment: qa
+    environment: dev
   - job:
     steps:
     - task: TerraformInstaller@1
@@ -225,13 +195,13 @@ stages:
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
         backendAzureRmContainerName: 'suvham-tfstate-container'
-        backendAzureRmKey: 'qa.tfstate'
+        backendAzureRmKey: 'dev.tfstate'
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
         command: 'destroy'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\qa\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=environments\dev\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'StageApply'
@@ -265,13 +235,13 @@ stages:
         commandOptions: '-var-file=environments\stage\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
-- stage: 'StageDestroy'
-  displayName: 'Stage Destroy'
+- stage: 'QADestroy'
+  displayName: 'QA Destroy'
   condition: and(succeeded(),eq(variables['Build.SourceBranch'],'refs/heads/main'))
-  dependsOn: StageApply
+  dependsOn: QAApply
   jobs:
   - deployment:
-    environment: stage
+    environment: qa
   - job:
     steps:
     - task: TerraformInstaller@1
@@ -286,13 +256,13 @@ stages:
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
         backendAzureRmContainerName: 'suvham-tfstate-container'
-        backendAzureRmKey: 'stage.tfstate'
+        backendAzureRmKey: 'qa.tfstate'
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
         command: 'destroy'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\stage\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=environments\qa\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'ProdApply'
@@ -325,6 +295,37 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
         commandOptions: '-var-file=environments\prod\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+
+- stage: 'StageDestroy'
+  displayName: 'Stage Destroy'
+  condition: and(succeeded(),eq(variables['Build.SourceBranch'],'refs/heads/main'))
+  dependsOn: StageApply
+  jobs:
+  - deployment:
+    environment: stage
+  - job:
+    steps:
+    - task: TerraformInstaller@1
+      inputs:
+        terraformVersion: 'latest'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+        backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
+        backendAzureRmStorageAccountName: 'suvhamtfstatesa'
+        backendAzureRmContainerName: 'suvham-tfstate-container'
+        backendAzureRmKey: 'stage.tfstate'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'destroy'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        commandOptions: '-var-file=environments\stage\variables.tfvars -auto-approve'
+        environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+
 
 - stage: 'ProdDestroy'
   displayName: 'Prod Destroy'
