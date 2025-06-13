@@ -176,6 +176,7 @@ stages:
 - stage: 'QAApply'
   displayName: 'QA Apply'
   condition: and(succeeded(),eq(variables['Build.SourceBranch'],'refs/heads/main'))
+  dependsOn: DevApply
   jobs:
   - deployment:
     environment: qa
@@ -236,6 +237,7 @@ stages:
 - stage: 'StageApply'
   displayName: 'Stage Apply'
   condition: and(succeeded(),eq(variables['Build.SourceBranch'],'refs/heads/main'))
+  dependsOn: QAApply
   jobs:
   - deployment:
     environment: stage
@@ -296,6 +298,7 @@ stages:
 - stage: 'ProdApply'
   displayName: 'Prod Apply'
   condition: and(succeeded(),eq(variables['Build.SourceBranch'],'refs/heads/main'))
+  dependsOn: StageApply
   jobs:
   - deployment:
     environment: prod
