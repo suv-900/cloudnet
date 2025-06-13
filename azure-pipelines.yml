@@ -6,22 +6,11 @@ trigger:
     include:
     - infrastructure/*
 
-parameters:
-- name: environment
-  type: string
-  displayName: Environment
-  default: dev
-  values:
-  - 'dev'
-  - 'prod'
-  - 'stage'
-  - 'qa'
-
 pool: Default
 
 stages:
-- stage: 'Validate'
-  displayName: 'Validate'
+- stage: 'DevPlan'
+  displayName: 'Dev Plan'
   jobs:
   - job: 
     steps:
@@ -37,36 +26,17 @@ stages:
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
         backendAzureRmContainerName: 'suvham-tfstate-container'
-        backendAzureRmKey: '${{parameters.environment}}.tfstate'
-    - task: TerraformTask@5
-      inputs:
-        provider: 'azurerm'
-        command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-- stage: 'Plan'
-  displayName: 'Dev Plan'
-  jobs:
-  - job:
-    steps:
-    - task: TerraformTask@5
-      inputs:
-        provider: 'azurerm'
-        command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
-        backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
-        backendAzureRmStorageAccountName: 'suvhamtfstatesa'
-        backendAzureRmContainerName: 'suvham-tfstate-container'
-        backendAzureRmKey: '${{parameters.environment}}.tfstate'
+        backendAzureRmKey: 'dev.tfstate'
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\${{ parameters.environment }}\variables.tfvars'
+        commandOptions: '-var-file=environments\dev\variables.tfvars'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+
     
-- stage: 'Apply'
+- stage: 'DevApply'
   displayName: 'Dev Apply'
   condition: and(succeeded(),eq(variables['Build.SourceBranch'],'refs/heads/main'))
   jobs:
@@ -87,17 +57,19 @@ stages:
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
         backendAzureRmContainerName: 'suvham-tfstate-container'
-        backendAzureRmKey: '${{parameters.environment}}.tfstate'
+        backendAzureRmKey: 'dev.tfstate'
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\${{ parameters.environment }}\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=environments\dev\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
-- stage: 'Destroy'
+- stage: 'DevDestroy'
   displayName: 'Dev Destroy'
+  condition: and(succeeded(),eq(variables['Build.SourceBranch'],'refs/heads/main'))
+  dependsOn: DevApply
   jobs:
   - deployment:
     environment: dev
@@ -115,12 +87,12 @@ stages:
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
         backendAzureRmContainerName: 'suvham-tfstate-container'
-        backendAzureRmKey: '${{parameters.environment}}.tfstate'
+        backendAzureRmKey: 'dev.tfstate'
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
         command: 'destroy'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\${{ parameters.environment }}\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=environments\dev\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
