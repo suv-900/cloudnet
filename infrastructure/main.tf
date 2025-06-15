@@ -27,10 +27,11 @@ module "db" {
   rg_name  = azurerm_resource_group.rg.name
   location = azurerm_resource_group.rg.location
 
-  sql_server_name = local.sql_server_name
-  sql_db_name     = local.sql_db_name
-  kv_id           = module.kv.kv_id
-  sql_sku         = var.sql_sku
+  sql_server_name          = local.sql_server_name
+  mssql_firewall_rule_name = local.mssql_firewall_rule_name
+  sql_db_name              = local.sql_db_name
+  kv_id                    = module.kv.kv_id
+  sql_sku                  = var.sql_sku
 
   secret_sql_username_name          = local.secret_sql_username_name
   secret_sql_password_name          = local.secret_sql_password_name
@@ -57,26 +58,26 @@ module "acr" {
 data "azurerm_key_vault_secret" "sql_username" {
   name         = local.secret_sql_username_name
   key_vault_id = module.kv.kv_id
-  
+
   depends_on = [module.acr]
 }
 
 data "azurerm_key_vault_secret" "sql_password" {
   name         = local.secret_sql_password_name
   key_vault_id = module.kv.kv_id
-  depends_on = [data.azurerm_key_vault_secret.sql_username]
+  depends_on   = [data.azurerm_key_vault_secret.sql_username]
 }
 
 data "azurerm_key_vault_secret" "server_fqdn" {
   name         = local.secret_sql_server_fqdn_name
   key_vault_id = module.kv.kv_id
-  depends_on = [data.azurerm_key_vault_secret.sql_password]
+  depends_on   = [data.azurerm_key_vault_secret.sql_password]
 }
 
 data "azurerm_key_vault_secret" "database_name" {
   name         = local.secret_sql_database_name
   key_vault_id = module.kv.kv_id
-  depends_on = [data.azurerm_key_vault_secret.server_fqdn]
+  depends_on   = [data.azurerm_key_vault_secret.server_fqdn]
 }
 
 module "webapp" {

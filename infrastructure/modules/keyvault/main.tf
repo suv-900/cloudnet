@@ -1,9 +1,9 @@
 resource "azurerm_key_vault" "kv" {
-  name                = var.kv_name
-  resource_group_name = var.rg_name
-  location            = var.location
-  sku_name            = var.sku
-  tenant_id           = var.tenant_id
+  name                     = var.kv_name
+  resource_group_name      = var.rg_name
+  location                 = var.location
+  sku_name                 = var.sku
+  tenant_id                = var.tenant_id
   purge_protection_enabled = false
 }
 

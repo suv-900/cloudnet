@@ -17,6 +17,7 @@ locals {
   secret_sql_connection_string_name = format("%s-sql-connection-string", var.environment)
   secret_sql_server_fqdn_name       = format("%s-sql-server-fqdn", var.environment)
   secret_sql_database_name          = format("%s-sql-database-name", var.environment)
+  mssql_firewall_rule_name          = format("%s-sql-firewall1", var.environment)
 
   dns_prefix = format("%s-suvham-dns", var.environment)
 }

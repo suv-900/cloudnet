@@ -13,6 +13,10 @@ variable "sql_server_name" {
   description = "Name of the Azure SQL Server instance"
 }
 
+variable "mssql_firewall_rule_name" {
+  type = string
+}
+
 variable "sql_db_name" {
   type        = string
   description = "Name of the SQL Database"
