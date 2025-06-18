@@ -60,7 +60,7 @@ stages:
         repository: 'devsuvhamacr1.azurecr.io'
         command: 'buildAndPush'
         Dockerfile: 'Dockerfile'
-        buildContext: 'application/'
+        buildContext: './application/'
 
 - stage: DevAppDeploy
   displayName: 'Dev Deploy'
