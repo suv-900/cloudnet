@@ -50,6 +50,9 @@ stages:
 - stage: DevBuildImage
   jobs:
   - job:
+    pool:
+      name: Default
+      demands: Agent.Name -equals ubuntu
     steps:
     - task: DockerInstaller@0
       inputs:
