@@ -9,7 +9,7 @@ trigger:
 pool: Default
 
 stages:
-- stage: DevBuild
+- stage: DevBuildApp
   displayName: 'Dev Build App'
   jobs:
   - job:
@@ -59,10 +59,11 @@ stages:
 
 - stage: DevAppDeploy
   displayName: 'Dev Deploy'
-  dependsOn: DevBuild
+  dependsOn: DevBuildApp
   jobs:
+  
   - deployment:
-    displayName: 'Dev Deploy'
+    displayName: 'Dev WebApp Deploy'
     environment: dev
     strategy:
       runOnce:
@@ -78,48 +79,40 @@ stages:
               RuntimeStack: 'NODE|16-lts'
               StartupCommand: 'node app.js'
               DeploymentTypeLinux: 'oneDeploy'
-          
-          - task: KubectlInstaller@0
-            inputs:
-              kubectlVersion: 'latest'
-          - task: AzureKeyVault@2
-            inputs:
-              azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
-              KeyVaultName: 'dev-suvham-kv'
-              SecretsFilter: 'dev-sql-user,dev-sql-password,dev-sql-database,dev-sql-server-fqdn'
-              RunAsPreJob: false
-          - task: Kubernetes@1
-            inputs:
-              connectionType: 'Azure Resource Manager'
-              azureSubscriptionEndpoint: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
-              azureResourceGroup: 'dev-suvham-rg'
-              kubernetesCluster: 'dev-suvham-aks'
-              command: 'create'
-              secretType: 'dockerRegistry'
-              containerRegistryType: 'Azure Container Registry'
-              azureSubscriptionEndpointForSecrets: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
-              secretName: 'acr_secret'
-          - task: Kubernetes@1
-            inputs:
-              connectionType: 'Azure Resource Manager'
-              azureSubscriptionEndpoint: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
-              azureResourceGroup: 'dev-suvham-rg'
-              kubernetesCluster: 'dev-suvham-aks'
-              command: 'create'
-              secretType: 'generic'
-              secretArguments: |
-                --from-literal=sql_user=${dev-sql-user}
-                --from-literal=sql_password=${dev-sql-password}
-                --from-literal=sql_database=${dev-sql-database}
-                --from-literal=sql_server=${dev-sql-server-fqdn}
-              secretName: 'db_cred'
+    
+  - job:
+    steps:
+      - task: KubectlInstaller@0
+        inputs:
+          kubectlVersion: 'latest'
+      - task: AzureKeyVault@2
+        inputs:
+          azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+          KeyVaultName: 'dev-suvham-kv'
+          SecretsFilter: 'dev-sql-user,dev-sql-password,dev-sql-database,dev-sql-server-fqdn'
+          RunAsPreJob: false
 
-          - task: CmdLine@2
-            inputs:
-              script: |
-                export ACR_LOGIN_SERVER=devsuvhamacr.azurecr.io
-                export IMAGE_NAME=$(Build.BuildId)
+      - task: Kubernetes@1
+        inputs:
+          connectionType: 'Azure Resource Manager'
+          azureSubscriptionEndpoint: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+          azureResourceGroup: 'dev-suvham-rg'
+          kubernetesCluster: 'dev-suvham-aks'
+          command: 'create'
+          secretType: 'generic'
+          secretArguments: |
+            --from-literal=sql_user=${dev-sql-user}
+            --from-literal=sql_password=${dev-sql-password}
+            --from-literal=sql_database=${dev-sql-database}
+            --from-literal=sql_server=${dev-sql-server-fqdn}
+          secretName: 'db_cred'
 
-          - task: CmdLine@2
-            inputs:
-              script: 'cat app/deployment.yml | envsubst | kubectl apply'
+      - task: CmdLine@2
+        inputs:
+          script: |
+            export ACR_LOGIN_SERVER=devsuvhamacr.azurecr.io
+            export IMAGE_NAME=$(Build.BuildId)
+
+      - task: CmdLine@2
+        inputs:
+          script: 'cat app/deployment.yml | envsubst | kubectl apply'
