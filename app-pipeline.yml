@@ -56,8 +56,6 @@ stages:
         command: 'buildAndPush'
         Dockerfile: 'application/Dockerfile'
         buildContext: '.'
-        tags: 
-
 
 - stage: DevAppDeploy
   displayName: 'Dev Deploy'
