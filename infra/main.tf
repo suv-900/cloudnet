@@ -95,6 +95,7 @@ module "webapp" {
     "SQL_PASSWORD" = data.azurerm_key_vault_secret.sql_password.value
     "SQL_SERVER"   = data.azurerm_key_vault_secret.server_fqdn.value
     "SQL_DATABASE" = data.azurerm_key_vault_secret.database_name.value
+    "SQL_ENCRYPT" = true
   }
 
   depends_on = [
