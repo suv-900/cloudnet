@@ -60,10 +60,6 @@ stages:
     - task: Docker@2
       inputs:
         containerRegistry: 'devacr_service_conn'
-        command: 'start'
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'devacr_service_conn'
         repository: 'devsuvhamacr1.azurecr.io'
         command: 'buildAndPush'
         Dockerfile: 'application/Dockerfile'
