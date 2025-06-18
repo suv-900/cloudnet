@@ -9,8 +9,8 @@ trigger:
 pool: Default
 
 stages:
-- stage: Build
-  displayName: 'Build App'
+- stage: DevBuild
+  displayName: 'Dev Build App'
   jobs:
   - job:
     steps:
@@ -36,12 +36,7 @@ stages:
     
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
-- stage: BuildImage
-  displayName: "Build & Push Image"
-  dependsOn: Build
-  jobs:
-  - job:
-    steps:
+    
     - task: Docker@2
       inputs:
         containerRegistry: 'devacr_service_conn'
@@ -50,12 +45,9 @@ stages:
         Dockerfile: '**/Dockerfile'
         buildContext: 'application/'
 
-
-
-
-- stage: DevDeploy
+- stage: DevAppDeploy
   displayName: 'Dev Deploy'
-  dependsOn: Build
+  dependsOn: DevBuild
   jobs:
   - deployment:
     displayName: 'Dev Deploy'
@@ -74,69 +66,8 @@ stages:
               RuntimeStack: 'NODE|16-lts'
               StartupCommand: 'node app.js'
               DeploymentTypeLinux: 'oneDeploy'
-              
-- stage: QADeploy
-  displayName: 'QA Deploy'
-  dependsOn: DevDeploy
-  jobs:
-  - deployment:
-    displayName: 'QA Deploy'
-    environment: qa
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureRmWebAppDeployment@5
-            inputs:
-              ConnectionType: 'AzureRM'
-              azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
-              appType: 'webAppLinux'
-              WebAppName: 'qa-suvham-webapp1'
-              packageForLinux: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
-              RuntimeStack: 'NODE|16-lts'
-              StartupCommand: 'node app.js'
-              DeploymentTypeLinux: 'oneDeploy'
-            
-- stage: StageDeploy
-  displayName: 'Stage Deploy'
-  dependsOn: QADeploy
-  jobs:
-  - deployment:
-    displayName: 'Stage Deploy'
-    environment: stage
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureRmWebAppDeployment@5
-            inputs:
-              ConnectionType: 'AzureRM'
-              azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
-              appType: 'webAppLinux'
-              WebAppName: 'stage-suvham-webapp1'
-              packageForLinux: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
-              RuntimeStack: 'NODE|16-lts'
-              StartupCommand: 'node app.js'
-              DeploymentTypeLinux: 'oneDeploy'
+    
 
-- stage: ProdDeploy
-  displayName: 'Prod Deploy'
-  dependsOn: StageDeploy
-  jobs:
-  - deployment:
-    displayName: 'Prod Deploy'
-    environment: prod
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureRmWebAppDeployment@5
-            inputs:
-              ConnectionType: 'AzureRM'
-              azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
-              appType: 'webAppLinux'
-              WebAppName: 'prod-suvham-webapp1'
-              packageForLinux: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
-              RuntimeStack: 'NODE|16-lts'
-              StartupCommand: 'node app.js'
-              DeploymentTypeLinux: 'oneDeploy'
+
+
+
