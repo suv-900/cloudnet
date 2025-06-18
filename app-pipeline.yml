@@ -54,7 +54,7 @@ stages:
         containerRegistry: 'devacr_service_conn'
         repository: 'devsuvhamacr1.azurecr.io'
         command: 'buildAndPush'
-        Dockerfile: 'application/Dockerfile'
+        Dockerfile: 'app/Dockerfile'
         buildContext: '.'
 
 - stage: DevAppDeploy
