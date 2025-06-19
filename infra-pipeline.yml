@@ -21,7 +21,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -31,8 +31,8 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\dev\variables.tfvars'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        commandOptions: '-var-file=infra\environments\dev\variables.tfvars'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'QAPlan'
@@ -47,7 +47,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -57,8 +57,8 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\qa\variables.tfvars'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        commandOptions: '-var-file=infra\environments\qa\variables.tfvars'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'StagePlan'
@@ -73,7 +73,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -83,8 +83,8 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\stage\variables.tfvars'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        commandOptions: '-var-file=infra\environments\stage\variables.tfvars'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'ProdPlan'
@@ -99,7 +99,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -109,8 +109,8 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\prod\variables.tfvars'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        commandOptions: '-var-file=infra\environments\prod\variables.tfvars'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'DevApply'
@@ -129,7 +129,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -139,8 +139,8 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\dev\variables.tfvars -auto-approve'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        commandOptions: '-var-file=infra\environments\dev\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'QAApply'
@@ -160,7 +160,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -170,8 +170,8 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\qa\variables.tfvars -auto-approve'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        commandOptions: '-var-file=infra\environments\qa\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'DevDestroy'
@@ -190,7 +190,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -200,8 +200,8 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'destroy'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\dev\variables.tfvars -auto-approve'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        commandOptions: '-var-file=infra\environments\dev\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'StageApply'
@@ -221,7 +221,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -231,8 +231,8 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\stage\variables.tfvars -auto-approve'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        commandOptions: '-var-file=infra\environments\stage\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'QADestroy'
@@ -251,7 +251,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -261,8 +261,8 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'destroy'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\qa\variables.tfvars -auto-approve'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        commandOptions: '-var-file=infra\environments\qa\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'ProdApply'
@@ -282,7 +282,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -292,8 +292,8 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\prod\variables.tfvars -auto-approve'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        commandOptions: '-var-file=infra\environments\prod\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'StageDestroy'
@@ -312,7 +312,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -322,8 +322,8 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'destroy'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\stage\variables.tfvars -auto-approve'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        commandOptions: '-var-file=infra\environments\stage\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 
@@ -343,7 +343,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -353,7 +353,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'destroy'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infrastructure\'
-        commandOptions: '-var-file=environments\prod\variables.tfvars -auto-approve'
+        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        commandOptions: '-var-file=infra\environments\prod\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
