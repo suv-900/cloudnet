@@ -110,32 +110,23 @@ stages:
           KeyVaultName: $(dev_kv_name)
           SecretsFilter: 'dev-sql-user,dev-sql-password,dev-sql-database-name,dev-sql-server-fqdn'
           RunAsPreJob: false
-
       - task: Bash@3
         inputs:
           targetType: 'inline'
           script: |
+            az aks get-credentials --resource-group $(dev_rg_name) --name $(dev_k8s_cluster_name) --overwrite-existing
+            
             export IMAGE_NAME=$(dev_acr_name).azurecr.io/$(dev_image_name):$(Build.BuildId)
-            cat manifests/deployment.yml | envsubst > deployment.yml
-      
-      - task: KubernetesManifest@1
-        displayName: 'Dev Deploy AKS'
-        inputs:
-          action: 'deploy'
-          connectionType: 'kubernetesServiceConnection'
-          kubernetesServiceConnection: 'dev-aks-con'
-          namespace: '$(k8s_namespace)'
-          manifests: |
-            manifests/deployment.yml
-            manifests/service.yml
-          containers: '$(dev_acr_name).azurecr.io/$(dev_image_name):$(Build.BuildId)'
-          azureResourceGroup: $(dev_rg_name)
-          secretType: 'generic'
-          secretName: 'dbcred'
-          secretArguments: |
-            --from-literal=sql-user=$(dev-sql-user)
-            --from-literal=sql-password=$(dev-sql-password)
-            --from-literal=sql-database=$(dev-sql-database-name) 
-            --from-literal=sql-server=$(dev-sql-server-fqdn)
-
+            
+            envsubst < manifests/deployment.yaml > manifests/deployment.yaml
+            
+            kubectl create secret generic dbcred \
+              --from-literal=sql-user=$(dev-sql-user)
+              --from-literal=sql-password=$(dev-sql-password)
+              --from-literal=sql-database=$(dev-sql-database-name) 
+              --from-literal=sql-server=$(dev-sql-server-fqdn)
+            
+            kubectl apply -f manifests/deployment.yaml --namespace default
+            
+            kubectl apply -f manifests/deployment.yaml --namespace default
       
