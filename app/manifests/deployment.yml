@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: k8s-app
+  namespace: default
   labels:
     app: k8s-app
 spec:
@@ -15,7 +16,7 @@ spec:
         app: k8s-app
     spec:
       containers:
-        - name: app 
+        - name: k8s-app 
           image: myacr.azurecr.io/image_name:latest
           ports:
             - containerPort: 8080
@@ -40,5 +41,5 @@ spec:
                 secretKeyRef:
                   name: dbcred
                   key: ${sql_server}
-            - name: SQL_ENCRYP
-              value: true
+            - name: SQL_ENCRYPT
+              value: "true"
