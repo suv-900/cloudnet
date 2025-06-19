@@ -94,7 +94,7 @@ stages:
         inputs:
           azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
           KeyVaultName: 'dev-suvham-kv'
-          SecretsFilter: 'dev-sql-user,dev-sql-password,dev-sql-database,dev-sql-server-fqdn'
+          SecretsFilter: 'dev-sql-user,dev-sql-password,dev-sql-database-name,dev-sql-server-fqdn'
           RunAsPreJob: false
 
       - task: Kubernetes@1
@@ -108,7 +108,7 @@ stages:
           secretArguments: |
             --from-literal=sql_user=${dev-sql-user}
             --from-literal=sql_password=${dev-sql-password}
-            --from-literal=sql_database=${dev-sql-database}
+            --from-literal=sql_database=${dev-sql-database-name}
             --from-literal=sql_server=${dev-sql-server-fqdn}
           secretName: 'db_cred'
 
