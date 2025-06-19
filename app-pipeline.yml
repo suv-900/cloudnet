@@ -16,7 +16,6 @@ variables:
   k8s_namespace: 'default'
   k8s_app_name: 'k8s-app'
   
-
 stages:
 - stage: DevBuildApp
   displayName: 'Dev Build App'
@@ -91,8 +90,6 @@ stages:
         buildContext: 'app/'
         tags: $(Build.BuildId)
     
-
-
 - stage: DevImageDeploy
   displayName: 'Dev Image Deploy'
   dependsOn: DevBuildImage
