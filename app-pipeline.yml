@@ -110,7 +110,7 @@ stages:
             --from-literal=sql_password=${dev-sql-password}
             --from-literal=sql_database=${dev-sql-database-name}
             --from-literal=sql_server=${dev-sql-server-fqdn}
-          secretName: 'db_cred'
+          secretName: 'dbcred'
 
       - task: CmdLine@2
         inputs:
