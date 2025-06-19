@@ -32,7 +32,7 @@ stages:
         provider: 'azurerm'
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
-        commandOptions: '-var-file=\infra\environments\dev\variables.tfvars'
+        commandOptions: '-var-file=$(System.DefaultWorkingDirectory)\infra\environments\dev\variables.tfvars'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'QAPlan'
@@ -140,7 +140,7 @@ stages:
         provider: 'azurerm'
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
-        commandOptions: '-var-file=\infra\environments\dev\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=$(System.DefaultWorkingDirectory)\infra\environments\dev\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'QAApply'
@@ -201,7 +201,7 @@ stages:
         provider: 'azurerm'
         command: 'destroy'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
-        commandOptions: '-var-file=\infra\environments\dev\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=$(System.DefaultWorkingDirectory)\infra\environments\dev\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'StageApply'
