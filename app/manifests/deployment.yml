@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: app 
-          image: $ACR_LOGIN_SERVER/$IMAGE_NAME
+          image: myacr.azurecr.io/image_name:latest
           ports:
             - containerPort: 8080
           env:
