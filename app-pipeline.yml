@@ -116,7 +116,7 @@ stages:
           targetType: 'inline'
           script: |
             export IMAGE_NAME=$(dev_acr_name).azurecr.io/$(dev_image_name):$(Build.BuildId)
-            cat manifests/deployment.yml | envsubst
+            cat manifests/deployment.yml | envsubst > deployment.yml
       
       - task: KubernetesManifest@1
         displayName: 'Dev Deploy AKS'
