@@ -14,6 +14,7 @@ variables:
   dev_image_name: 'dev-suvham-image'
   dev_acr_name: 'devsuvhamacr'
   k8s_namespace: 'default'
+  k8s_app_name: 'k8s-app'
   
 
 stages:
@@ -120,6 +121,8 @@ stages:
             
             envsubst < manifests/deployment.yaml > manifests/deployment.yaml
             
+            kubectl delete secret dbcred --ignore-not-found=true
+
             kubectl create secret generic dbcred \
               --from-literal=sql-user=$(dev-sql-user)
               --from-literal=sql-password=$(dev-sql-password)
@@ -128,5 +131,7 @@ stages:
             
             kubectl apply -f manifests/deployment.yaml --namespace default
             
-            kubectl apply -f manifests/deployment.yaml --namespace default
+            kubectl apply -f manifests/service.yaml --namespace default
+
+            kubectl rollout status deployment/$(k8s_app_name) --namespace default --timeout=300s
       
