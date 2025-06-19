@@ -25,21 +25,21 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: dbcred
-                  key: ${sql-user}
+                  key: sql-user
             - name: SQL_PASSWORD 
               valueFrom:
                 secretKeyRef:
                   name: dbcred
-                  key: ${sql-password} 
+                  key: sql-password 
             - name: SQL_DATABASE
               valueFrom:
                 secretKeyRef:
                   name: dbcred
-                  key: ${sql-database}
+                  key: sql-database
             - name: SQL_SERVER
               valueFrom:
                 secretKeyRef:
                   name: dbcred
-                  key: ${sql-server}
+                  key: sql-server
             - name: SQL_ENCRYPT
               value: "true"
