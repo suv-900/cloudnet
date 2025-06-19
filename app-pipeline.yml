@@ -64,6 +64,7 @@ stages:
         command: 'buildAndPush'
         Dockerfile: 'app/Dockerfile'
         buildContext: 'app/'
+        tags: $(Build.BuildId)
     
 
 - stage: DevAppDeploy
