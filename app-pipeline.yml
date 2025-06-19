@@ -106,10 +106,7 @@ stages:
           command: 'create'
           secretType: 'generic'
           secretArguments: |
-            --from-literal=sql_user=${dev-sql-user}
-            --from-literal=sql_password=${dev-sql-password}
-            --from-literal=sql_database=${dev-sql-database-name}
-            --from-literal=sql_server=${dev-sql-server-fqdn}
+            --from-literal=sql_user=${dev-sql-user} --from-literal=sql_password=${dev-sql-password} --from-literal=sql_database=${dev-sql-database-name} --from-literal=sql_server=${dev-sql-server-fqdn}
           secretName: 'dbcred'
 
       - task: CmdLine@2
