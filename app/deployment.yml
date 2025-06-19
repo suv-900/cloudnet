@@ -23,22 +23,22 @@ spec:
             - name: SQL_USER 
               valueFrom:
                 secretKeyRef:
-                  name: db-cred
+                  name: dbcred
                   key: ${sql_user}
             - name: SQL_PASSWORD 
               valueFrom:
                 secretKeyRef:
-                  name: db-cred
+                  name: dbcred
                   key: ${sql_password} 
             - name: SQL_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: db-cred
+                  name: dbcred
                   key: ${sql_database}
             - name: SQL_SERVER
               valueFrom:
                 secretKeyRef:
-                  name: db-cred
+                  name: dbcred
                   key: ${sql_server}
             - name: SQL_ENCRYP
               value: true

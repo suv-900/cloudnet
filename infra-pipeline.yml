@@ -47,7 +47,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/'
         backendServiceArm: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
         backendAzureRmResourceGroupName: 'suvham-tfstate-rg'
         backendAzureRmStorageAccountName: 'suvhamtfstatesa'
@@ -57,7 +57,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/'
         commandOptions: '-var-file=infra\environments\qa\variables.tfvars'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
