@@ -111,8 +111,8 @@ stages:
           kubernetesServiceConnection: 'dev-aks-con'
           namespace: '$(k8s_namespace)'
           manifests: |
-            app/manifests/deployment.yml
-            app/manifests/service.yml
+            manifests/deployment.yml
+            manifests/service.yml
           containers: '$(dev_acr_name).azurecr.io/$(dev_image_name):$(Build.BuildId)'
           azureResourceGroup: $(dev_rg_name)
           secretType: 'generic'
