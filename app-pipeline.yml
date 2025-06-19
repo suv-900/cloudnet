@@ -60,7 +60,7 @@ stages:
     - task: Docker@2
       inputs:
         containerRegistry: 'devacrcon'
-        repository: ${dev_image_name}
+        repository: $(dev_image_name)
         command: 'buildAndPush'
         Dockerfile: 'app/Dockerfile'
         buildContext: 'app/'
@@ -99,7 +99,7 @@ stages:
       - task: AzureKeyVault@2
         inputs:
           azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
-          KeyVaultName: ${dev_kv_name}
+          KeyVaultName: $(dev_kv_name)
           SecretsFilter: 'dev-sql-user,dev-sql-password,dev-sql-database-name,dev-sql-server-fqdn'
           RunAsPreJob: false
 
@@ -109,18 +109,18 @@ stages:
           action: 'deploy'
           connectionType: 'kubernetesServiceConnection'
           kubernetesServiceConnection: 'dev-aks-con'
-          namespace: '${k8s_namepsace}'
+          namespace: '$(k8s_namepsace)'
           manifests: |
             app/manifests/deployment.yml
             app/manifests/service.yml
-          containers: '${dev_acr_name}.azurecr.io/${dev_image_name}:${Build.BuildId}'
-          azureResourceGroup: ${dev_rg_name}
+          containers: '$(dev_acr_name).azurecr.io/$(dev_image_name):$(Build.BuildId)'
+          azureResourceGroup: $(dev_rg_name)
           secretType: 'generic'
           secretName: 'dbcred'
           secretArguments: |
-            --from-literal=sql_user=${dev-sql-user} 
-            --from-literal=sql_password=${dev-sql-password} 
-            --from-literal=sql_database=${dev-sql-database-name} 
-            --from-literal=sql_server=${dev-sql-server-fqdn}
+            --from-literal=sql_user=$(dev-sql-user)
+            --from-literal=sql_password=$(dev-sql-password)
+            --from-literal=sql_database=$(dev-sql-database-name) 
+            --from-literal=sql_server=$(dev-sql-server-fqdn)
 
       
