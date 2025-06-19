@@ -48,14 +48,15 @@ stages:
     - task: DockerInstaller@0
       inputs:
         dockerVersion: '17.09.0-ce'
-      
+    
     - task: Docker@2
       inputs:
-        containerRegistry: 'dev-acr-service-con25'
-        repository: 'devsuvham-image1'
+        containerRegistry: 'devacrcon'
+        repository: 'dev-suvham-image'
         command: 'buildAndPush'
         Dockerfile: 'app/Dockerfile'
         buildContext: 'app/'
+    
 
 - stage: DevAppDeploy
   displayName: 'Dev Deploy'
@@ -115,7 +116,7 @@ stages:
         inputs:
           script: |
             export ACR_LOGIN_SERVER=devsuvhamacr.azurecr.io
-            export IMAGE_NAME=$(Build.BuildId)
+            export IMAGE_NAME=dev-suvham-image
 
       - task: CmdLine@2
         inputs:
