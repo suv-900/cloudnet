@@ -52,7 +52,7 @@ stages:
     - task: Docker@2
       inputs:
         containerRegistry: 'dev-acr-service-con25'
-        repository: 'devsuvhamacr'
+        repository: 'devsuvham-image1'
         command: 'buildAndPush'
         Dockerfile: 'app/Dockerfile'
         buildContext: 'app/'
