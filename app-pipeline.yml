@@ -111,6 +111,13 @@ stages:
           SecretsFilter: 'dev-sql-user,dev-sql-password,dev-sql-database-name,dev-sql-server-fqdn'
           RunAsPreJob: false
 
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: |
+            export IMAGE_NAME=$(dev_acr_name).azurecr.io/$(dev_image_name):$(Build.BuildId)
+            cat manifests/deployment.yml | envsubst
+      
       - task: KubernetesManifest@1
         displayName: 'Dev Deploy AKS'
         inputs:
