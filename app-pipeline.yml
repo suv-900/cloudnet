@@ -108,7 +108,7 @@ stages:
         inputs:
           action: 'deploy'
           connectionType: 'kubernetesServiceConnection'
-          kubernetesServiceConnection: ''
+          kubernetesServiceConnection: 'dev-aks-con'
           namespace: '${k8s_namepsace}'
           manifests: |
             app/manifests/deployment.yml
