@@ -62,7 +62,7 @@ stages:
               ConnectionType: 'AzureRM'
               azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
               appType: 'webAppLinux'
-              WebAppName: 'dev-suvham-webapp1'
+              WebAppName: 'dev-suvham-webapp'
               packageForLinux: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
               RuntimeStack: 'NODE|16-lts'
               StartupCommand: 'node app.js'
