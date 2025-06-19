@@ -17,9 +17,9 @@ spec:
     spec:
       containers:
         - name: k8s-app 
-          image: myacr.azurecr.io/image_name:latest
+          image: $IMAGE_NAME
           ports:
-            - containerPort: 8080
+            - containerPort: 3000
           env:
             - name: SQL_USER 
               valueFrom:
