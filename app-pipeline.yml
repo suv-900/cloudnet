@@ -79,7 +79,11 @@ stages:
               RuntimeStack: 'NODE|16-lts'
               StartupCommand: 'node app.js'
               DeploymentTypeLinux: 'oneDeploy'
-    
+
+- stage: DevImageDeploy
+  displayName: 'Dev Image Deploy'
+  dependsOn: DevBuildImage
+  jobs:
   - job:
     steps:
       - task: KubectlInstaller@0
