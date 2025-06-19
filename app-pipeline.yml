@@ -117,4 +117,4 @@ stages:
 
       - task: CmdLine@2
         inputs:
-          script: 'cat app/deployment.yml | envsubst | kubectl apply'
+          script: 'cat app/deployment.yml | envsubst | kubectl apply -f -'
