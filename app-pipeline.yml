@@ -44,28 +44,6 @@ stages:
     
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
-    
-
-- stage: DevBuildImage
-  jobs:
-  - job:
-    pool:
-      name: Default
-      demands: Agent.Name -equals ubuntu
-    steps:
-    - task: DockerInstaller@0
-      inputs:
-        dockerVersion: '17.09.0-ce'
-    
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'devacrcon'
-        repository: $(dev_image_name)
-        command: 'buildAndPush'
-        Dockerfile: 'app/Dockerfile'
-        buildContext: 'app/'
-        tags: $(Build.BuildId)
-    
 
 - stage: DevAppDeploy
   displayName: 'Dev Deploy'
@@ -89,6 +67,30 @@ stages:
               RuntimeStack: 'NODE|16-lts'
               StartupCommand: 'node app.js'
               DeploymentTypeLinux: 'oneDeploy'
+
+
+- stage: DevBuildImage
+  dependsOn: DevAppDeploy
+  jobs:
+  - job:
+    pool:
+      name: Default
+      demands: Agent.Name -equals ubuntu
+    steps:
+    - task: DockerInstaller@0
+      inputs:
+        dockerVersion: '17.09.0-ce'
+    
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'devacrcon'
+        repository: $(dev_image_name)
+        command: 'buildAndPush'
+        Dockerfile: 'app/Dockerfile'
+        buildContext: 'app/'
+        tags: $(Build.BuildId)
+    
+
 
 - stage: DevImageDeploy
   displayName: 'Dev Image Deploy'
