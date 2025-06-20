@@ -108,10 +108,13 @@ stages:
           KeyVaultName: $(dev_kv_name)
           SecretsFilter: 'dev-sql-user,dev-sql-password,dev-sql-database-name,dev-sql-server-fqdn'
           RunAsPreJob: false
-      - task: Bash@3
+        
+      - task: AzureCLI@2
         inputs:
-          targetType: 'inline'
-          script: |
+          azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
             az aks get-credentials --resource-group $(dev_rg_name) --name $(dev_k8s_cluster_name) --overwrite-existing
             
             export IMAGE_NAME=$(dev_acr_name).azurecr.io/$(dev_image_name):$(Build.BuildId)
@@ -132,5 +135,4 @@ stages:
             
             kubectl apply -f manifests/service.yaml --namespace default
 
-            kubectl rollout status deployment/$(k8s_app_name) --namespace default --timeout=300s
-      
+            kubectl rollout status deployment/$(k8s_app_name) --namespace default --timeout=300s     
