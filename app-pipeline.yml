@@ -124,9 +124,9 @@ stages:
             kubectl delete secret dbcred --ignore-not-found=true
 
             kubectl create secret generic dbcred \
-              --from-literal=sql-user=$(dev-sql-user)
-              --from-literal=sql-password=$(dev-sql-password)
-              --from-literal=sql-database=$(dev-sql-database-name) 
+              --from-literal=sql-user=$(dev-sql-user) \
+              --from-literal=sql-password=$(dev-sql-password) \
+              --from-literal=sql-database=$(dev-sql-database-name) \
               --from-literal=sql-server=$(dev-sql-server-fqdn)
             
             kubectl apply -f manifests/deployment.yaml --namespace default
