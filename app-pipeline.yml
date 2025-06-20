@@ -95,6 +95,9 @@ stages:
   dependsOn: DevBuildImage
   jobs:
   - job:
+    pool:
+      name: Default
+      demands: Agent.Name -equals ubuntu
     steps:
       - task: KubectlInstaller@0
         inputs:
@@ -117,8 +120,6 @@ stages:
             export IMAGE_NAME=$(dev_acr_name).azurecr.io/$(dev_image_name):$(Build.BuildId)
             
             envsubst < manifests/deployment.yaml > manifests/deployment.yaml
-            
-            cat manifests/deployment.yaml
             
             kubectl delete secret dbcred --ignore-not-found=true
 
