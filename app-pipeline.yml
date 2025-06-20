@@ -10,11 +10,37 @@ pool: Default
 variables:
   dev_rg_name: 'dev-suvham-rg'
   dev_kv_name: 'dev-suvham-kv'
+  dev_webapp_name: 'dev-suvham-webapp'
   dev_k8s_cluster_name: 'dev-suvham-aks'
   dev_image_name: 'dev-suvham-image'
   dev_acr_name: 'devsuvhamacr'
+  dev_k8s_app_name: 'k8s-app'
+
+  qa_rg_name: 'qa-suvham-rg'
+  qa_kv_name: 'qa-suvham-kv'
+  qa_webapp_name: 'qa-suvham-webapp'
+  qa_k8s_cluster_name: 'qa-suvham-aks'
+  qa_image_name: 'qa-suvham-image'
+  qa_acr_name: 'qasuvhamacr'
+  qa_k8s_app_name: 'k8s-app'
+
+  stage_rg_name: 'stage-suvham-rg'
+  stage_kv_name: 'stage-suvham-kv'
+  stage_webapp_name: 'stage-suvham-webapp'
+  stage_k8s_cluster_name: 'stage-suvham-aks'
+  stage_image_name: 'stage-suvham-image'
+  stage_acr_name: 'stagesuvhamacr'
+  stage_k8s_app_name: 'k8s-app'
+
+  prod_rg_name: 'prod-suvham-rg'
+  prod_kv_name: 'prod-suvham-kv'
+  prod_webapp_name: 'prod-suvham-webapp'
+  prod_k8s_cluster_name: 'prod-suvham-aks'
+  prod_image_name: 'prod-suvham-image'
+  prod_acr_name: 'prodsuvhamacr'
+  prod_k8s_app_name: 'k8s-app'
+
   k8s_namespace: 'default'
-  k8s_app_name: 'k8s-app'
   
 stages:
 - stage: DevBuildApp
@@ -62,7 +88,7 @@ stages:
               ConnectionType: 'AzureRM'
               azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
               appType: 'webAppLinux'
-              WebAppName: 'dev-suvham-webapp'
+              WebAppName: $(dev_webapp_name)
               packageForLinux: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
               RuntimeStack: 'NODE|16-lts'
               StartupCommand: 'node app.js'
@@ -130,4 +156,348 @@ stages:
             
             kubectl apply -f manifests/service.yaml --namespace default
 
-            kubectl rollout status deployment/$(k8s_app_name) --namespace default --timeout=300s     
+            kubectl rollout status deployment/$(dev_k8s_app_name) --namespace default --timeout=300s     
+
+- stage: QABuildApp
+  displayName: 'QA Build App'
+  jobs:
+  - job:
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSource: 'spec'
+        versionSpec: '16.x'
+      displayName: 'Install Nodejs'
+    
+    - script: |
+        cd app
+        npm install
+        npm run build --if-present
+        npm run test --if-present
+      displayName: 'Npm install'
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/app/'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+    
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
+
+- stage: QAAppDeploy
+  displayName: 'QA Deploy'
+  dependsOn: QABuildApp
+  jobs:
+  
+  - deployment:
+    displayName: 'QA WebApp Deploy'
+    environment: qa
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureRmWebAppDeployment@5
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+              appType: 'webAppLinux'
+              WebAppName: $(qa_webapp_name)
+              packageForLinux: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+              RuntimeStack: 'NODE|16-lts'
+              StartupCommand: 'node app.js'
+              DeploymentTypeLinux: 'oneDeploy'
+
+
+- stage: QABuildImage
+  dependsOn: QAAppDeploy
+  jobs:
+  - job:
+    pool:
+      name: Default
+      demands: Agent.Name -equals ubuntu
+    steps:
+    - task: DockerInstaller@0
+      inputs:
+        dockerVersion: '17.09.0-ce'
+    
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'qaacrcon'
+        repository: $(qa_image_name)
+        command: 'buildAndPush'
+        Dockerfile: 'app/Dockerfile'
+        buildContext: 'app/'
+        tags: $(Build.BuildId)
+    
+- stage: QAImageDeploy
+  displayName: 'QA Image Deploy'
+  dependsOn: QABuildImage
+  jobs:
+  - job:
+    pool:
+      name: Default
+      demands: Agent.Name -equals ubuntu
+    steps:
+      - task: KubectlInstaller@0
+        inputs:
+          kubectlVersion: 'latest'
+      - task: AzureKeyVault@2
+        inputs:
+          azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+          KeyVaultName: $(qa_kv_name)
+          SecretsFilter: 'qa-sql-user,qa-sql-password,qa-sql-database-name,qa-sql-server-fqdn'
+          RunAsPreJob: false
+        
+      - task: AzureCLI@2
+        inputs:
+          azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az aks get-credentials --resource-group $(qa_rg_name) --name $(qa_k8s_cluster_name) --overwrite-existing
+            
+            export IMAGE_NAME=$(qa_acr_name).azurecr.io/$(qa_image_name):$(Build.BuildId)
+
+            sed " s|_IMAGE_NAME_|$IMAGE_NAME|g; \
+                  s|_SQL_USER_|$(qa-sql-user)|g; \
+                  s|_SQL_PASSWORD_|$(qa-sql-password)|g; \
+                  s|_SQL_DATABASE_|$(qa-sql-database-name)|g; \
+                  s|_SQL_SERVER_|$(qa-sql-server-fqdn)|g; \
+                  " manifests/deployment.yaml > manifests/changed_deployment.yaml
+            
+            kubectl apply -f manifests/changed_deployment.yaml --namespace default
+            
+            kubectl apply -f manifests/service.yaml --namespace default
+
+            kubectl rollout status deployment/$(qa_k8s_app_name) --namespace default --timeout=300s     
+
+- stage: StageBuildApp
+  displayName: 'Stage Build App'
+  jobs:
+  - job:
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSource: 'spec'
+        versionSpec: '16.x'
+      displayName: 'Install Nodejs'
+    
+    - script: |
+        cd app
+        npm install
+        npm run build --if-present
+        npm run test --if-present
+      displayName: 'Npm install'
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/app/'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+    
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
+
+- stage: StageAppDeploy
+  displayName: 'Stage Deploy'
+  dependsOn: StageBuildApp
+  jobs:
+  
+  - deployment:
+    displayName: 'Stage WebApp Deploy'
+    environment: stage
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureRmWebAppDeployment@5
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+              appType: 'webAppLinux'
+              WebAppName: $(stage_webapp_name)
+              packageForLinux: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+              RuntimeStack: 'NODE|16-lts'
+              StartupCommand: 'node app.js'
+              DeploymentTypeLinux: 'oneDeploy'
+
+
+- stage: StageBuildImage
+  dependsOn: StageAppDeploy
+  jobs:
+  - job:
+    pool:
+      name: Default
+      demands: Agent.Name -equals ubuntu
+    steps:
+    - task: DockerInstaller@0
+      inputs:
+        dockerVersion: '17.09.0-ce'
+    
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'stageacrcon'
+        repository: $(stage_image_name)
+        command: 'buildAndPush'
+        Dockerfile: 'app/Dockerfile'
+        buildContext: 'app/'
+        tags: $(Build.BuildId)
+    
+- stage: StageImageDeploy
+  displayName: 'Stage Image Deploy'
+  dependsOn: StageBuildImage
+  jobs:
+  - job:
+    pool:
+      name: Default
+      demands: Agent.Name -equals ubuntu
+    steps:
+      - task: KubectlInstaller@0
+        inputs:
+          kubectlVersion: 'latest'
+      - task: AzureKeyVault@2
+        inputs:
+          azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+          KeyVaultName: $(stage_kv_name)
+          SecretsFilter: 'stage-sql-user,stage-sql-password,stage-sql-database-name,stage-sql-server-fqdn'
+          RunAsPreJob: false
+        
+      - task: AzureCLI@2
+        inputs:
+          azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az aks get-credentials --resource-group $(stage_rg_name) --name $(stage_k8s_cluster_name) --overwrite-existing
+            
+            export IMAGE_NAME=$(stage_acr_name).azurecr.io/$(stage_image_name):$(Build.BuildId)
+
+            sed " s|_IMAGE_NAME_|$IMAGE_NAME|g; \
+                  s|_SQL_USER_|$(stage-sql-user)|g; \
+                  s|_SQL_PASSWORD_|$(stage-sql-password)|g; \
+                  s|_SQL_DATABASE_|$(stage-sql-database-name)|g; \
+                  s|_SQL_SERVER_|$(stage-sql-server-fqdn)|g; \
+                  " manifests/deployment.yaml > manifests/changed_deployment.yaml
+            
+            kubectl apply -f manifests/changed_deployment.yaml --namespace default
+            
+            kubectl apply -f manifests/service.yaml --namespace default
+
+            kubectl rollout status deployment/$(stage_k8s_app_name) --namespace default --timeout=300s     
+
+- stage: ProdBuildApp
+  displayName: 'Prod Build App'
+  jobs:
+  - job:
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSource: 'spec'
+        versionSpec: '16.x'
+      displayName: 'Install Nodejs'
+    
+    - script: |
+        cd app
+        npm install
+        npm run build --if-present
+        npm run test --if-present
+      displayName: 'Npm install'
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/app/'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+    
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
+
+- stage: ProdAppDeploy
+  displayName: 'Prod Deploy'
+  dependsOn: ProdBuildApp
+  jobs:
+  - deployment:
+    displayName: 'Prod WebApp Deploy'
+    environment: prod
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureRmWebAppDeployment@5
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+              appType: 'webAppLinux'
+              WebAppName: $(prod_webapp_name)
+              packageForLinux: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+              RuntimeStack: 'NODE|16-lts'
+              StartupCommand: 'node app.js'
+              DeploymentTypeLinux: 'oneDeploy'
+
+
+- stage: ProdBuildImage
+  dependsOn: ProdAppDeploy
+  jobs:
+  - job:
+    pool:
+      name: Default
+      demands: Agent.Name -equals ubuntu
+    steps:
+    - task: DockerInstaller@0
+      inputs:
+        dockerVersion: '17.09.0-ce'
+    
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'prodacrcon'
+        repository: $(prod_image_name)
+        command: 'buildAndPush'
+        Dockerfile: 'app/Dockerfile'
+        buildContext: 'app/'
+        tags: $(Build.BuildId)
+    
+- stage: ProdImageDeploy
+  displayName: 'Prod Image Deploy'
+  dependsOn: ProdBuildImage
+  jobs:
+  - job:
+    pool:
+      name: Default
+      demands: Agent.Name -equals ubuntu
+    steps:
+      - task: KubectlInstaller@0
+        inputs:
+          kubectlVersion: 'latest'
+      - task: AzureKeyVault@2
+        inputs:
+          azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+          KeyVaultName: $(prod_kv_name)
+          SecretsFilter: 'prod-sql-user,prod-sql-password,prod-sql-database-name,prod-sql-server-fqdn'
+          RunAsPreJob: false
+        
+      - task: AzureCLI@2
+        inputs:
+          azureSubscription: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az aks get-credentials --resource-group $(prod_rg_name) --name $(prod_k8s_cluster_name) --overwrite-existing
+            
+            export IMAGE_NAME=$(prod_acr_name).azurecr.io/$(prod_image_name):$(Build.BuildId)
+
+            sed " s|_IMAGE_NAME_|$IMAGE_NAME|g; \
+                  s|_SQL_USER_|$(prod-sql-user)|g; \
+                  s|_SQL_PASSWORD_|$(prod-sql-password)|g; \
+                  s|_SQL_DATABASE_|$(prod-sql-database-name)|g; \
+                  s|_SQL_SERVER_|$(prod-sql-server-fqdn)|g; \
+                  " manifests/deployment.yaml > manifests/changed_deployment.yaml
+            
+            kubectl apply -f manifests/changed_deployment.yaml --namespace default
+            
+            kubectl apply -f manifests/service.yaml --namespace default
+
+            kubectl rollout status deployment/$(prod_k8s_app_name) --namespace default --timeout=300s     
