@@ -118,14 +118,13 @@ stages:
             az aks get-credentials --resource-group $(dev_rg_name) --name $(dev_k8s_cluster_name) --overwrite-existing
             
             export IMAGE_NAME=$(dev_acr_name).azurecr.io/$(dev_image_name):$(Build.BuildId)
-            
-            envsubst < manifests/deployment.yaml > manifests/changed_deployment.yaml
 
-            kubectl create secret generic dbcred \
-              --from-literal=sql-user=$(dev-sql-user) \
-              --from-literal=sql-password=$(dev-sql-password) \
-              --from-literal=sql-database=$(dev-sql-database-name) \
-              --from-literal=sql-server=$(dev-sql-server-fqdn)
+            sed " s|_IMAGE_NAME_|$IMAGE_NAME|g; \
+                  s|_SQL_USER_|$(dev-sql-user)|g; \
+                  s|_SQL_PASSWORD_|$(dev-sql-password)|g; \
+                  s|_SQL_DATABASE_|$(dev-sql-database-name)|g; \
+                  s|_SQL_SERVER_|$(dev-sql-server-fqdn)|g; \
+                  " manifests/deployment.yaml > manifests/changed_deployment.yaml
             
             kubectl apply -f manifests/changed_deployment.yaml --namespace default
             
