@@ -17,29 +17,17 @@ spec:
     spec:
       containers:
         - name: k8s-app 
-          image: $IMAGE_NAME
+          image: _IMAGE_NAME_
           ports:
             - containerPort: 3000
           env:
-            - name: SQL_USER 
-              valueFrom:
-                secretKeyRef:
-                  name: dbcred
-                  key: sql-user
+            - name: SQL_USER
+              value: "_SQL_USER_" 
             - name: SQL_PASSWORD 
-              valueFrom:
-                secretKeyRef:
-                  name: dbcred
-                  key: sql-password 
+              value: "_SQL_PASSWORD_"
             - name: SQL_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: dbcred
-                  key: sql-database
+              value: "_SQL_DATABASE_"
             - name: SQL_SERVER
-              valueFrom:
-                secretKeyRef:
-                  name: dbcred
-                  key: sql-server
+              value: "_SQL_SERVER_"
             - name: SQL_ENCRYPT
               value: "true"
