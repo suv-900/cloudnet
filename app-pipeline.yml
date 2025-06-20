@@ -118,6 +118,8 @@ stages:
             
             envsubst < manifests/deployment.yaml > manifests/deployment.yaml
             
+            cat manifests/deployment.yaml
+            
             kubectl delete secret dbcred --ignore-not-found=true
 
             kubectl create secret generic dbcred \
