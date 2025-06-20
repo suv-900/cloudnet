@@ -119,7 +119,7 @@ stages:
             
             export IMAGE_NAME=$(dev_acr_name).azurecr.io/$(dev_image_name):$(Build.BuildId)
             
-            envsubst < manifests/deployment.yaml > manifests/deployment.yaml
+            envsubst < manifests/deployment.yaml > manifests/changed_deployment.yaml
             
             kubectl delete secret dbcred --ignore-not-found=true
 
@@ -129,7 +129,7 @@ stages:
               --from-literal=sql-database=$(dev-sql-database-name) \
               --from-literal=sql-server=$(dev-sql-server-fqdn)
             
-            kubectl apply -f manifests/deployment.yaml --namespace default
+            kubectl apply -f manifests/changed_deployment.yaml --namespace default
             
             kubectl apply -f manifests/service.yaml --namespace default
 
