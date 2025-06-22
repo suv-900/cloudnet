@@ -58,7 +58,7 @@ stages:
         provider: 'azurerm'
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/infra/'
-        commandOptions: '-var-file=infra\environments\qa\variables.tfvars'
+        commandOptions: '-var-file=$(System.DefaultWorkingDirectory)\infra\environments\qa\variables.tfvars'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'StagePlan'
@@ -84,7 +84,7 @@ stages:
         provider: 'azurerm'
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
-        commandOptions: '-var-file=infra\environments\stage\variables.tfvars'
+        commandOptions: '-var-file=$(System.DefaultWorkingDirectory)\infra\environments\stage\variables.tfvars'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'ProdPlan'
@@ -110,7 +110,7 @@ stages:
         provider: 'azurerm'
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
-        commandOptions: '-var-file=infra\environments\prod\variables.tfvars'
+        commandOptions: '-var-file=$(System.DefaultWorkingDirectory)\infra\environments\prod\variables.tfvars'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'DevApply'
@@ -171,7 +171,7 @@ stages:
         provider: 'azurerm'
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
-        commandOptions: '-var-file=infra\environments\qa\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=$(System.DefaultWorkingDirectory)\infra\environments\qa\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'DevDestroy'
@@ -232,7 +232,7 @@ stages:
         provider: 'azurerm'
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
-        commandOptions: '-var-file=infra\environments\stage\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=$(System.DefaultWorkingDirectory)\infra\environments\stage\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'QADestroy'
@@ -262,7 +262,7 @@ stages:
         provider: 'azurerm'
         command: 'destroy'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
-        commandOptions: '-var-file=infra\environments\qa\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=$(System.DefaultWorkingDirectory)\infra\environments\qa\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'ProdApply'
@@ -293,7 +293,7 @@ stages:
         provider: 'azurerm'
         command: 'apply'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
-        commandOptions: '-var-file=infra\environments\prod\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=$(System.DefaultWorkingDirectory)\infra\environments\prod\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 - stage: 'StageDestroy'
@@ -323,7 +323,7 @@ stages:
         provider: 'azurerm'
         command: 'destroy'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
-        commandOptions: '-var-file=infra\environments\stage\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=$(System.DefaultWorkingDirectory)\infra\environments\stage\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
 
@@ -354,6 +354,6 @@ stages:
         provider: 'azurerm'
         command: 'destroy'
         workingDirectory: '$(System.DefaultWorkingDirectory)\infra\'
-        commandOptions: '-var-file=infra\environments\prod\variables.tfvars -auto-approve'
+        commandOptions: '-var-file=$(System.DefaultWorkingDirectory)\infra\environments\prod\variables.tfvars -auto-approve'
         environmentServiceNameAzureRM: 'suvham_paul@epam.com(a53670da-bf9b-4c7d-825a-7544c720e890)'
 
