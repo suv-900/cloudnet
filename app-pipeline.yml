@@ -43,8 +43,8 @@ variables:
   k8s_namespace: 'default'
   
 stages:
-- stage: DevBuildApp
-  displayName: 'Dev Build App'
+- stage: BuildApp
+  displayName: 'Build App'
   jobs:
   - job:
     steps:
@@ -73,7 +73,7 @@ stages:
 
 - stage: DevAppDeploy
   displayName: 'Dev Deploy'
-  dependsOn: DevBuildApp
+  dependsOn: BuildApp
   jobs:
   
   - deployment:
@@ -158,37 +158,9 @@ stages:
 
             kubectl rollout status deployment/$(dev_k8s_app_name) --namespace default --timeout=300s     
 
-- stage: QABuildApp
-  displayName: 'QA Build App'
-  jobs:
-  - job:
-    steps:
-    - task: NodeTool@0
-      inputs:
-        versionSource: 'spec'
-        versionSpec: '16.x'
-      displayName: 'Install Nodejs'
-    
-    - script: |
-        cd app
-        npm install
-        npm run build --if-present
-        npm run test --if-present
-      displayName: 'Npm install'
-    - task: ArchiveFiles@2
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/app/'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-        replaceExistingArchive: true
-    
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-      artifact: drop
-
 - stage: QAAppDeploy
   displayName: 'QA Deploy'
-  dependsOn: QABuildApp
+  dependsOn: DevImageDeploy
   jobs:
   
   - deployment:
@@ -272,34 +244,6 @@ stages:
             kubectl apply -f manifests/service.yaml --namespace default
 
             kubectl rollout status deployment/$(qa_k8s_app_name) --namespace default --timeout=300s     
-
-- stage: StageBuildApp
-  displayName: 'Stage Build App'
-  jobs:
-  - job:
-    steps:
-    - task: NodeTool@0
-      inputs:
-        versionSource: 'spec'
-        versionSpec: '16.x'
-      displayName: 'Install Nodejs'
-    
-    - script: |
-        cd app
-        npm install
-        npm run build --if-present
-        npm run test --if-present
-      displayName: 'Npm install'
-    - task: ArchiveFiles@2
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/app/'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-        replaceExistingArchive: true
-    
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-      artifact: drop
 
 - stage: StageAppDeploy
   displayName: 'Stage Deploy'
@@ -388,34 +332,6 @@ stages:
 
             kubectl rollout status deployment/$(stage_k8s_app_name) --namespace default --timeout=300s     
 
-- stage: ProdBuildApp
-  displayName: 'Prod Build App'
-  jobs:
-  - job:
-    steps:
-    - task: NodeTool@0
-      inputs:
-        versionSource: 'spec'
-        versionSpec: '16.x'
-      displayName: 'Install Nodejs'
-    
-    - script: |
-        cd app
-        npm install
-        npm run build --if-present
-        npm run test --if-present
-      displayName: 'Npm install'
-    - task: ArchiveFiles@2
-      inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/app/'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-        replaceExistingArchive: true
-    
-    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-      artifact: drop
-
 - stage: ProdAppDeploy
   displayName: 'Prod Deploy'
   dependsOn: ProdBuildApp
@@ -437,7 +353,6 @@ stages:
               RuntimeStack: 'NODE|16-lts'
               StartupCommand: 'node app.js'
               DeploymentTypeLinux: 'oneDeploy'
-
 
 - stage: ProdBuildImage
   dependsOn: ProdAppDeploy
