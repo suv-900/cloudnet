@@ -247,7 +247,7 @@ stages:
 
 - stage: StageAppDeploy
   displayName: 'Stage Deploy'
-  dependsOn: StageBuildApp
+  dependsOn: QAImageDeploy
   jobs:
   
   - deployment:
@@ -334,7 +334,7 @@ stages:
 
 - stage: ProdAppDeploy
   displayName: 'Prod Deploy'
-  dependsOn: ProdBuildApp
+  dependsOn: StageImageDeploy
   jobs:
   - deployment:
     displayName: 'Prod WebApp Deploy'
